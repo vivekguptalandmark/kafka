@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.kafka.producer.services.autoconfigure.ProducerAutoconfigure, \
+  com.kafka.producer.web.autoconfigure.ProducerControllerAutoconfiguration

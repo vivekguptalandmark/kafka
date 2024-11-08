@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        backpressureOutput:
+          destination: backpressure
+          group: backpressure-producer
+        backpressureInput:
+          group: backpressure-consumer
+          destination: backpressure
+      kafka:
+        binder:
+          brokers: localhost:9092
