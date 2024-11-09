@@ -1,13 +1,12 @@
+server:
+  port: 9991
 spring:
   cloud:
     stream:
       bindings:
-        backpressureOutput:
-          destination: backpressure
-          group: backpressure-producer
-        backpressureInput:
-          group: backpressure-consumer
+        backpressur:
+          binder: kafka
           destination: backpressure
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: kafka-service:9099
