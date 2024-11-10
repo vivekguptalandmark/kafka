@@ -1,12 +1,22 @@
 server:
   port: 9991
+logging:
+  level:
+    org.springframework.cloud.stream: DEBUG
+    org.apache.kafka: DEBUG
 spring:
   cloud:
     stream:
       bindings:
-        backpressur:
+        bpOutputProducer-out-0:
           binder: kafka
-          destination: backpressure
+          destination: myTopic
+        # Define the consumer binding (bpInputConsumer)
+        bpInputConsumer-in-0: # Binding name for the input channel
+          binder: kafka   # Using Kafka binder
+          destination: myTopic  # Kafka topic name you want to consume from
+          group: mai  # Consumer group (you can change as needed)
       kafka:
         binder:
-          brokers: kafka-service:9099
+          brokers: kafka-service:9092
+          auto-offset-reset: earliest
