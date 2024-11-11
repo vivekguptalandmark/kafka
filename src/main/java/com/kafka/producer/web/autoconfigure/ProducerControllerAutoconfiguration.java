@@ -1,6 +1,6 @@
-package com.ka.producer.web.autoconfigure;
+package com.kafka.producer.web.autoconfigure;
 
-import com.ka.producer.web.endpoint.ProducerController;
+import com.kafka.producer.web.endpoint.ProducerController;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 

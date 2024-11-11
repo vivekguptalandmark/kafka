@@ -1,4 +1,4 @@
-package com.ka.producer.services;
+package com.kafka.producer.services;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class ProducerService {
         streamBridge.send("backpressureOutput", MessageBuilder.withPayload(message).build());
     }
 
-
+//TODO: consumer need to be separate service not part of producer and need to use functional programming
     @KafkaListener(topics = "backpressure", groupId = "backpressure-consumer")
     public void backpressureInput(Message<String> msg) {
         System.out.println("Received message: " + msg.getPayload());

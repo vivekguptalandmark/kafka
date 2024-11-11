@@ -1,6 +1,6 @@
-package com.ka.producer.web.endpoint;
+package com.kafka.producer.web.endpoint;
 
-import com.ka.producer.services.ProducerService;
+import com.kafka.producer.services.ProducerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

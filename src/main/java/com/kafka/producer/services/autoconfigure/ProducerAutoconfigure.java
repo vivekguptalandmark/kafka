@@ -1,16 +1,10 @@
-package com.ka.producer.services.autoconfigure;
+package com.kafka.producer.services.autoconfigure;
 
-import com.ka.producer.services.ProducerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kafka.producer.services.ProducerService;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.DirectChannel;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-
-import java.util.function.Consumer;
 
 @Configuration
 @EnableKafka
