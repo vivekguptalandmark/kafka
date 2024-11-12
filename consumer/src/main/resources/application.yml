@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        # Consumer input binding to the existing Kafka topic
+        backpressureInput:
+          group: backpressure-consumer
+          destination: backpressure  # Bind explicitly to the existing 'backpressure' topic
+          consumer:
+            maxAttempts: 3               # Retry up to 3 times on failure
+            backOffInitialInterval: 1000  # 1-second initial backoff
+            backOffMaxInterval: 10000     # 10-second max backoff
+
+      kafka:
+        binder:
+          brokers: kafka-service:9092
+          autoCreateTopics: false       # Prevent auto-creation of topics by Kafka binder
+          requiredAcks: 1               # Acknowledgment level for message reliability
+          configuration:
+            max.poll.records: 500       # Limits batch size to manage load
+            enable.auto.commit: false   # Ensures manual commit (for reliable processing)
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          stream: DEBUG  # Enables detailed logging for stream bindings
