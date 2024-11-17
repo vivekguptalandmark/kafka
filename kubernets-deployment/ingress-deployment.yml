@@ -2,44 +2,35 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: my-ingress
-  namespace: default  # Change if Kafdrop or Kafka is in a different namespace
+  namespace: default  # Ensure this is the namespace where you want to deploy the Ingress resource
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /  # Ensures requests are rewritten to root
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx  # Specifies which ingress controller should handle this ingress
   rules:
-    - host: practice.kafka
+    - host: practice.kafka  # The hostname to match for incoming requests
       http:
         paths:
           - path: /kafdrop
-            pathType: Prefix
+            pathType: Prefix  # Match paths starting with /kafdrop
             backend:
               service:
                 name: kafdrop
                 port:
                   number: 9000
+
           - path: /
-            pathType: Prefix
+            pathType: Prefix  # Default path for the Kafdrop service
             backend:
               service:
-                name: kafdrop 
+                name: kafdrop
                 port:
-                  number: 9000  
-          - path: /kafka
-            pathType: Prefix
+                  number: 9000
+
+          - path: /producer/  # Path for accessing the producer service
+            pathType: Prefix  # Matches paths starting with /producer
             backend:
               service:
-                name: kafka-service 
+                name: producer-service  # Ensure the producer-service is running in the 'default' namespace
                 port:
-                  number: 9002
- 
-# helm repo add ingress-nginx https://charts.nginx.org
-# helm repo update
-#  helm install my-nginx ingress-nginx/ingress-nginx
-#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-#kubectl apply -f <your-ingress-file>.yaml
-#kubectl get services -o wide -w
-
-
-
-
+                  number: 80  # The port where the producer-service is exposed
