@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: kafka
 spec:
-  replicas: 1
+  replicas: 3
+  serviceName: kafka-headless
   selector:
     matchLabels:
       app: kafka
@@ -13,57 +14,45 @@ spec:
         app: kafka
     spec:
       containers:
-      - name: kafka
-        image: confluentinc/cp-kafka:7.2.1
-        env:
-          - name: KAFKA_BROKER_ID
-            value: "1"
-          - name: KAFKA_ZOOKEEPER_CONNECT
-            value: "zookeeper:2181"  # Adjust if using KRaft
-          - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
-            value: "true"
-          - name: KAFKA_JMX_OPTS
-            value: '-Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka-service -Djava.net.preferIPv4Stack=true'
-          - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-            value: "PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
-          - name: KAFKA_ADVERTISED_LISTENERS
-            value: "PLAINTEXT://kafka-service:9092,EXTERNAL://localhost:30092"
-          - name: KAFKA_LISTENERS
-            value: "PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094"
-          - name: KAFKA_INTER_BROKER_LISTENER_NAME
-            value: "PLAINTEXT"
-          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-            value: "1"
-        ports:
-          - containerPort: 9092
+        - name: kafka
+          image: confluentinc/cp-kafka:7.2.1
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              # Set POD_NAME and KAFKA_BROKER_ID
+              export POD_NAME=$(hostname)
+              export KAFKA_BROKER_ID=$(echo $POD_NAME | grep -oP '\d+')
+              # Set the advertised listener to use the correct DNS name for each broker
+              export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://$POD_NAME.kafka-headless.default.svc.cluster.local:9092"
+              # Run Kafka with the set broker ID
+              exec /etc/confluent/docker/run
+          envFrom:
+            - configMapRef:
+                name: kafka-config
+          ports:
+            - containerPort: 9092
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
-        readinessProbe:
-          tcpSocket:
-            port: 9092
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        livenessProbe:
-          tcpSocket:
-            port: 9092
-          initialDelaySeconds: 60
-          periodSeconds: 10
+            storage: 10Gi
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka-service
 spec:
-  type: LoadBalancer  # Change NodePort to LoadBalancer
+  type: LoadBalancer  # Expose Kafka to the outside world using a LoadBalancer
+  ports:
+    - port: 9092
+      targetPort: 9092
   selector:
     app: kafka
-  ports:
-    - port: 9092         # The port that will be exposed by the LoadBalancer
-      targetPort: 9092   # The port on the Kafka pod to which traffic will be sent
