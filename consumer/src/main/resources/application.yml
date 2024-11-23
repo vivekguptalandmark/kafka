@@ -1,11 +1,14 @@
 spring:
   cloud:
     stream:
+      function:
+        definition: processMessage
       bindings:
         # Consumer input binding to the existing Kafka topic
-        backpressureInput:
+        processMessage-in-0:
           group: backpressure-consumer
           destination: backpressure  # Bind explicitly to the existing 'backpressure' topic
+          contentType: application/json # Message type (e.g., JSON)
           consumer:
             maxAttempts: 3               # Retry up to 3 times on failure
             backOffInitialInterval: 1000  # 1-second initial backoff
@@ -26,3 +29,4 @@ logging:
       springframework:
         cloud:
           stream: DEBUG  # Enables detailed logging for stream bindings
+        kafka: DEBUG  # Kafka specific logs

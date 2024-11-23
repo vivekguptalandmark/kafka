@@ -10,6 +10,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 public class ProducerService {
@@ -19,7 +20,7 @@ public class ProducerService {
 
 
     public void sendMessage(String message) {
-        streamBridge.send("backpressureOutput", MessageBuilder.withPayload(message).build());
+        IntStream.range(0, 100000).forEach( x -> streamBridge.send("backpressureOutput", MessageBuilder.withPayload(message + x).build()));
     }
 
 

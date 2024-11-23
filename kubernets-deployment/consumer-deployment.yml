@@ -17,6 +17,14 @@ spec:
         image: vivekguptalandmarkgroupin/kafka:consumer-image-latest
         ports:
         - containerPort: 8080   # Exposing port 8080 for the consumer container
+        resources:
+          limits:
+            memory: "256Mi" # Maximum memory the container can use
+            cpu: "500m"     # Maximum CPU the container can use (50% of a single core)
+          requests:
+            memory: "128Mi" # Minimum memory requested
+            cpu: "250m"     # Minimum CPU requested
+
 ---
 apiVersion: v1
 kind: Service
