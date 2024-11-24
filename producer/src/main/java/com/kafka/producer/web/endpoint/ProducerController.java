@@ -16,7 +16,11 @@ public class ProducerController {
 
     @GetMapping("/send")
     public String sendMessage(@RequestParam("message") String message) {
-        producerService.sendMessage(message);
+        for (int i=0; i< 100000;i++)
+        {
+            producerService.sendMessage(message + i);
+        }
+
         return "Message sent to Kafka!";
     }
 }

@@ -3,16 +3,16 @@ server:
 spring:
   cloud:
     stream:
+      function:
+        definition: backpressureInput # Links to the functional bean name
       bindings:
-        # Consumer input binding to the existing Kafka topic
-        backpressureInput:
-          group: backpressure-consumer
-          destination: backpressure  # Bind explicitly to the existing 'backpressure' topic
+        backpressureInput-in-0: # Binding name for the input topic
+          destination: backpressure # Explicitly bind to the 'backpressure' topic
+          group: backpressure-consumer # Consumer group for Kafka
           consumer:
-            maxAttempts: 3               # Retry up to 3 times on failure
-            backOffInitialInterval: 1000  # 1-second initial backoff
-            backOffMaxInterval: 10000     # 10-second max backoff
-
+            maxAttempts: 3
+            backOffInitialInterval: 1000
+            backOffMaxInterval: 10000
       kafka:
         binder:
           brokers: kafka-service:9002
@@ -21,7 +21,6 @@ spring:
           configuration:
             max.poll.records: 500       # Limits batch size to manage load
             enable.auto.commit: false   # Ensures manual commit (for reliable processing)
-
 logging:
   level:
     org:
