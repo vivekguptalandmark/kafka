@@ -23,13 +23,24 @@ spec:
               # Set POD_NAME and KAFKA_BROKER_ID
               export POD_NAME=$(hostname)
               export KAFKA_BROKER_ID=$(echo $POD_NAME | grep -oP '\d+')
+              
               # Set the advertised listener to use the correct DNS name for each broker
               export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://$POD_NAME.kafka-headless.default.svc.cluster.local:9092"
-              # Run Kafka with the set broker ID
+              
+              # Print configuration for debugging
+              echo "POD_NAME: $POD_NAME"
+              echo "KAFKA_BROKER_ID: $KAFKA_BROKER_ID"
+              echo "KAFKA_ADVERTISED_LISTENERS: $KAFKA_ADVERTISED_LISTENERS"
+              
+              # Run Kafka
               exec /etc/confluent/docker/run
-          envFrom:
-            - configMapRef:
-                name: kafka-config
+          env:
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: zookeeper:2181
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL
+              value: PLAINTEXT
+            - name: KAFKA_LISTENER_NAME
+              value: PLAINTEXT
           ports:
             - containerPort: 9092
           volumeMounts:
@@ -43,6 +54,18 @@ spec:
         resources:
           requests:
             storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+spec:
+  clusterIP: None  # Headless service for StatefulSet
+  ports:
+    - port: 9092
+      targetPort: 9092
+  selector:
+    app: kafka
 
 ---
 apiVersion: v1

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: consumer-deployment
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       app: consumer
@@ -21,7 +21,14 @@ spec:
             - name: spring.cloud.stream.kafka.binder.defaultBroker
               value: 'kafka-service:9092'
           ports:
-            - containerPort: 8080   # Exposing port 8080 for the consumer container
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"   # Even smaller memory request
+              cpu: "100m"       # Even smaller CPU request
+            limits:
+              memory: "256Mi"  # Limit memory to 128 MiB
+              cpu: "200m"      # Limit CPU to 100m (0.1 core)
 ---
 apiVersion: v1
 kind: Service
