@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: consumer-deployment
 spec:
-  replicas: 10
+  replicas: 1  # Initial number of replicas, HPA will scale this
   selector:
     matchLabels:
       app: consumer
@@ -24,11 +24,11 @@ spec:
             - containerPort: 8080
           resources:
             requests:
-              memory: "128Mi"   # Even smaller memory request
-              cpu: "100m"       # Even smaller CPU request
+              memory: "128Mi"
+              cpu: "50m"
             limits:
-              memory: "256Mi"  # Limit memory to 128 MiB
-              cpu: "200m"      # Limit CPU to 100m (0.1 core)
+              memory: "256Mi"
+              cpu: "100m"
 ---
 apiVersion: v1
 kind: Service
