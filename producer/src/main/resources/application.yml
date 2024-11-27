@@ -5,11 +5,8 @@ spring:
   cloud:
     stream:
       bindings:
-        # Producer output binding
         backpressureOutput:
           destination: backpressure
-
-
       kafka:
         binder:
           brokers: kafka-service:9092

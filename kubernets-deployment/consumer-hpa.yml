@@ -16,3 +16,9 @@ spec:
         target:
           type: Utilization
           averageUtilization: 90  # Target CPU utilization percentage
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75  # Target memory utilization percentage
