@@ -3,8 +3,6 @@ kind: Ingress
 metadata:
   name: my-ingress
   namespace: default  # Ensure this is the namespace where you want to deploy the Ingress resource
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /  # Ensures requests are rewritten to root
 spec:
   ingressClassName: nginx  # Specifies which ingress controller should handle this ingress
   rules:
