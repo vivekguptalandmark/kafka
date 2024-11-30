@@ -28,4 +28,5 @@ logging:
         kafka: DEBUG
       springframework:
         cloud:
-          stream: DEBUG  # Enables detailed logging for stream bindings
+          stream:
+            binding: ERROR
