@@ -24,7 +24,7 @@
 17. use port forward send messages to producer service:
     ```kubectl port-forward service/producer-service 8555:80```
 18. you can create partition using below command:  please note this path depends on your base kafka image
-    ```kubectl exec -it kafka-0 -- bash -c "/usr/bin/kafka-topics --alter --topic backpressure --bootstrap-server kafka-service:9092 --partitions 20" ```
+    ```kubectl exec -it kafka-0 -- bash -c "/usr/bin/kafka-topics --alter --topic backpressure --bootstrap-server kafka-service:9092 --partitions 10" ```
 19. Apply HPA to scale up consumer pod  ```kubectl apply -f consumer-hpa.yml```
 20. Note: if you are running HPA on desktop-local, HPA may not be applied due to it will not be able to read metrix. so
     let's install metrix:
