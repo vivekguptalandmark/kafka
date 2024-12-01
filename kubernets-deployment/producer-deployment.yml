@@ -18,15 +18,15 @@ spec:
           ports:
             - containerPort: 9991
           env:
-            - name: SERVER_PORT
+            - name: SERVER_PORT # this could be avoided as same is anyway present in producer config
               value: "9991"
-            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_DESTINATION
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_DESTINATION # this could be avoided as same is anyway present in producer config
               value: "backpressure"
-            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONKEYEXPRESSION
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONKEYEXPRESSION # this is to make sure producer produces messages  in  round-robin way explicitly using partition key
               value: "T(java.lang.System).currentTimeMillis() % 10"
-            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONCOUNT
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONCOUNT  # this  to your application know about number of partitions
               value: "10"
-            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS # this could be avoided as same is anyway present in producer config
               value: "kafka-service:9092"
             - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOCREATETOPICS
               value: "false"
