@@ -13,10 +13,31 @@ spec:
         app: producer
     spec:
       containers:
-      - name: producer
-        image: vivekguptalandmarkgroupin/kafka:producer-image-latest
-        ports:
-        - containerPort: 9991
+        - name: producer
+          image: vivekguptalandmarkgroupin/kafka:producer-image-latest
+          ports:
+            - containerPort: 9991
+          env:
+            - name: SERVER_PORT
+              value: "9991"
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_DESTINATION
+              value: "backpressure"
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONKEYEXPRESSION
+              value: "T(java.lang.System).currentTimeMillis() % 10"
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREOUTPUT_PRODUCER_PARTITIONCOUNT
+              value: "10"
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
+              value: "kafka-service:9092"
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOCREATETOPICS
+              value: "false"
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_REQUIREDACKS
+              value: "1"
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_CONFIGURATION_MAX_POLL_RECORDS
+              value: "500"
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_CONFIGURATION_ENABLE_AUTO_COMMIT
+              value: "false"
+            - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_STREAM
+              value: "DEBUG"
 ---
 apiVersion: v1
 kind: Service

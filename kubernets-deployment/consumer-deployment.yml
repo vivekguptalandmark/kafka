@@ -16,18 +16,22 @@ spec:
         - name: consumer
           image: vivekguptalandmarkgroupin/kafka:consumer-image-latest
           env:
-            - name: spring.cloud.stream.kafka.binder.brokers
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
               value: 'kafka-service:9092'
-            - name: spring.cloud.stream.kafka.binder.defaultBroker
-              value: 'kafka-service:9092'
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_CONFIGURATION_PARTITION_ASSIGNMENT_STRATEGY
+              value: 'org.apache.kafka.clients.consumer.RangeAssignor' # Set your desired strategy
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREINPUT_GROUP
+              value: 'consumer-group' # Ensure all pods use the same group
+            - name: SPRING_CLOUD_STREAM_BINDINGS_BACKPRESSUREINPUT_DESTINATION
+              value: 'backpressure'
           ports:
             - containerPort: 8080
           resources:
             requests:
-              memory: "256Mi"
+              memory: "200Mi"
               cpu: "50m"
             limits:
-              memory: "512Mi"
+              memory: "400Mi"
               cpu: "100m"
 ---
 apiVersion: v1
